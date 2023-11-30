@@ -1,0 +1,469 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "News portal",
+        "description": "Documentation for the NewsAPI",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/articles": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Get a listing of articles.",
+                "description": "Returns a list of articles based on the user's preferences and search criteria.",
+                "operationId": "articles.index",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Keywords or a phrase to search for.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "articles": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "source": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "engadget"
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Engadget"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Mat Smith"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "The Morning After: Microsoft recruits recently fired OpenAI CEO, Sam Altman"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "OpenAI’s board of directors announced Friday it had fired CEO Sam Altman. But he’s doing okay. By Monday morning, he had joined Microsoft “to lead a new advanced AI research team,” according to the company."
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://www.engadget.com/the-morning-after-microsoft-recruits-recently-fired-openai-ceo-sam-altman-121523955.html"
+                                                    },
+                                                    "urlToImage": {
+                                                        "type": "string",
+                                                        "example": "https://s.yimg.com/ny/api/res/1.2/TdeBQRLZ0qN0hkvKFENN6A--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04NTc-/https://s.yimg.com/os/creatr-uploaded-images/2023-11/7661fd60-85cc-11ee-bddf-d93b4819eea6"
+                                                    },
+                                                    "publishedAt": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-20T12:15:23Z"
+                                                    },
+                                                    "content": {
+                                                        "type": "string",
+                                                        "example": "OpenAI’s board of directors announced Friday it had fired CEO Sam Altman. But he’s doing okay. By Monday morning, he had joined Microsoft “to lead a new advanced AI research team,” according to the company… [+3202 chars]"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/paginated": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Get a listing of articles based on user preferences and search criteria",
+                "description": "Returns a list of articles based on the user's preferences and search criteria.",
+                "operationId": "articles.paginated",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Keywords or a phrase to search for.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "in": "query",
+                        "description": "The 2-letter ISO-639-1 code of the language.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sources",
+                        "in": "query",
+                        "description": "A comma-separated string of identifiers for the news sources or blogs.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "domains",
+                        "in": "query",
+                        "description": "A comma-separated string of domains (e.g., bbc.co.uk) to restrict the search to.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "exclude_domains",
+                        "in": "query",
+                        "description": "A comma-separated string of domains (e.g., bbc.co.uk) to exclude from the search.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "A date and optional time for the oldest article allowed (in the format YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "A date and optional time for the newest article allowed (in the format YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "The order to sort the articles (possible values: 'relevancy', 'popularity', 'publishedAt').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "relevancy",
+                                "popularity",
+                                "publishedAt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "The number of articles to return per page.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number to retrieve.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "articles": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "source": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "engadget"
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Engadget"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Mat Smith"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "The Morning After: Microsoft recruits recently fired OpenAI CEO, Sam Altman"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "OpenAI’s board of directors announced Friday it had fired CEO Sam Altman. But he’s doing okay. By Monday morning, he had joined Microsoft “to lead a new advanced AI research team,” according to the company."
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://www.engadget.com/the-morning-after-microsoft-recruits-recently-fired-openai-ceo-sam-altman-121523955.html"
+                                                    },
+                                                    "urlToImage": {
+                                                        "type": "string",
+                                                        "example": "https://s.yimg.com/ny/api/res/1.2/TdeBQRLZ0qN0hkvKFENN6A--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04NTc-/https://s.yimg.com/os/creatr-uploaded-images/2023-11/7661fd60-85cc-11ee-bddf-d93b4819eea6"
+                                                    },
+                                                    "publishedAt": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-20T12:15:23Z"
+                                                    },
+                                                    "content": {
+                                                        "type": "string",
+                                                        "example": "OpenAI’s board of directors announced Friday it had fired CEO Sam Altman. But he’s doing okay. By Monday morning, he had joined Microsoft “to lead a new advanced AI research team,” according to the company… [+3202 chars]"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/topHeadlines": {
+            "get": {
+                "tags": [
+                    "TopHeadlines"
+                ],
+                "summary": "Get a list of articles based on user preferences",
+                "description": "Returns a list of articles based on the user's country and category preferences.",
+                "operationId": "topHeadlines.index",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "The selected category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "The selected country",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results to return per page (request)",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Use this to page through the results if the total results found is greater than the page size.",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "articles": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "source": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "source_id_example"
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Yahoo Entertainment"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Edwin Chan"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Musk Defends Himself on X After Antisemitic Furor Deepens - Yahoo Finance"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "(Bloomberg) -- Elon Musk railed against “bogus” media reports accusing him of antisemitism, issuing his strongest response yet after endorsing antisemitic..."
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://finance.yahoo.com/news/musk-defends-himself-x-antisemitic-035726993.html"
+                                                    },
+                                                    "urlToImage": {
+                                                        "type": "string",
+                                                        "example": "https://s.yimg.com/ny/api/res/1.2/p_j_tPXC.zii92Y9Ck3XTw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04ODM-/https://media.zenfs.com/en/bloomberg_technology_68/e3d581a28a7356a3d18b50e2b529faec"
+                                                    },
+                                                    "publishedAt": {
+                                                        "type": "string",
+                                                        "example": "2023-11-20T07:32:00Z"
+                                                    },
+                                                    "content": {
+                                                        "type": "string",
+                                                        "example": "(Bloomberg) -- Elon Musk railed against bogus media reports accusing him of antisemitism, issuing his strongest response yet after endorsing antisemitic content in a post on X that provoked outrage a… [+1624 chars]"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
