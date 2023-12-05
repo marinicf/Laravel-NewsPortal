@@ -14,6 +14,46 @@ use Inertia\Response;
  */
 class AdminController extends Controller
 {
+/**
+     * Display a listing of non-admin users.
+     *
+     * @authenticated
+     *
+     * @return \Inertia\Response
+     *
+     * @OA\Get(
+     *      path="/adminDashboard",
+     *      operationId="admin.index",
+     *      tags={"Admin"},
+     *      summary="Display a listing of non-admin users.",
+     *      description="Returns a list of non-admin users for admin dashboard.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="users", type="array", @OA\Items(
+     *                  @OA\Property(property="id", type="integer", example=1),
+     *                  @OA\Property(property="name", type="string", example="John Doe"),
+     *                  @OA\Property(property="email", type="string", example="john@example.com"),
+     *              )),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Internal server error",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="error", type="string")
+     *          )
+     *      )
+     * )
+     */
+    public function index(Request $request)
+    {
+        $users = User::where('is_admin', false)->get();
+        return Inertia::render('Dashboard', ['users' => $users]);
+    }
     /**
  * Display the specified user's information and favourite articles.
  *
