@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 
 defineProps({
     articles: {
@@ -14,10 +14,13 @@ defineProps({
     },
 });
 
-const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+const deleteFavArticle = (article_id) => {
+    if (confirm("Are you sure?")) {
+        router.delete(route("favourites.destroy", article_id), {
+            preserveScroll: true,
+        });
+    }
 };
-const form = useForm({});
 </script>
 
 <template>
@@ -39,7 +42,7 @@ const form = useForm({});
                         <a v-bind:href="article.url">
                             <img
                                 class="rounded-t-lg"
-                                v-bind:src="article.urlToImage"
+                                v-bind:src="article.image_url"
                                 alt=""
                             />
                         </a>
@@ -54,12 +57,22 @@ const form = useForm({});
                             <p class="font-normal text-gray-700 mb-3">
                                 {{ article.description }}
                             </p>
+                        </div>
+                        <div class="flex justify-evenly mb-3">
                             <a
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-                                v-bind:href="article.url"
+                                :href="article.url"
                             >
                                 Read more
                             </a>
+                            <div>
+                                <button
+                                    @click="deleteFavArticle(article.id)"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

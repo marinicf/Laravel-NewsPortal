@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\User;
+use App\Models\UserFavourite;
 use Illuminate\Http\Request;
 use jcobhams\NewsApi\NewsApi;
 use Inertia\Inertia;
@@ -85,6 +87,8 @@ class ArticleController extends Controller
 
         $allLanguages = $newsapi->getLanguages();
 
+        $allFavourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+
         $response = $newsapi->getEverything($keyword, null, null, null, null, null, null, null, $prePage, null);
 
         //Return view with articles and all data required for view.
@@ -93,7 +97,8 @@ class ArticleController extends Controller
             'articles' => $response->articles,
             'allSortByOptions' => $allSortbyOptions, 
             'keyword'=> $keyword, 
-            'allLanguages' => $allLanguages, 
+            'allLanguages' => $allLanguages,
+            'allFavourites' => $allFavourites, 
         ]);
     }
     /**
@@ -218,7 +223,7 @@ class ArticleController extends Controller
     *
     * @throws \Exception if there is an issue with the News API request.
     */
-    public function paginated(Request $request){
+    public function paginated(Request $request): Response{
 
         $user = auth()->user();
 

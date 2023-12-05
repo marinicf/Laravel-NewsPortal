@@ -6,6 +6,125 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/admin/{userId}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Display the specified user's information and favourite articles.",
+                "description": "Returns information about a specific user and their favourite articles.",
+                "operationId": "admin.show",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "userFavourites": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Article Title"
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/article"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Author Name"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Article Description"
+                                                    },
+                                                    "image_url": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/image.jpg"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-12-01T12:34:56Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/articles": {
             "get": {
                 "tags": [
@@ -440,6 +559,318 @@
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/favourites": {
+            "get": {
+                "tags": [
+                    "Favourites"
+                ],
+                "summary": "Get a listing of user's favourite articles.",
+                "description": "Returns a list of articles that the user has marked as favourites.",
+                "operationId": "favourites.index",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Article Title"
+                                            },
+                                            "url": {
+                                                "type": "string",
+                                                "example": "https://example.com/article"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "Author Name"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Article Description"
+                                            },
+                                            "image_url": {
+                                                "type": "string",
+                                                "example": "https://example.com/image.jpg"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-12-01T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Favourites"
+                ],
+                "summary": "Store a newly created favourite article in databes.",
+                "description": "Returns redirect to article.index.",
+                "operationId": "favourites.store",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/favourites{favourite_id}": {
+            "delete": {
+                "tags": [
+                    "Favourites"
+                ],
+                "summary": "Remove the specified favourite article from database.",
+                "description": "Returns redirect to article.index.",
+                "operationId": "favourites.destroy",
+                "parameters": [
+                    {
+                        "name": "favourite_id",
+                        "in": "path",
+                        "description": "ID of the favorite article to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Not Found - The requested resource could not be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/userSettings": {
+            "get": {
+                "tags": [
+                    "User Settings"
+                ],
+                "summary": "Show the form for editing user settings.",
+                "description": "Returns the form for editing user settings including preferred category, country, and language.",
+                "operationId": "userSettings.edit",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "allLanguages": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "allCategories": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "allCountries": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "User Settings"
+                ],
+                "summary": "Update the user settings.",
+                "description": "Updates the user settings including preferred category, country, and language.",
+                "operationId": "userSettings.update",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "country",
+                                    "language"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "description": "Preferred news category",
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "description": "Preferred news country",
+                                        "type": "string"
+                                    },
+                                    "language": {
+                                        "description": "Preferred news language",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Successful operation. Redirects to the user settings edit page.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User settings updated successfully."
                                         }
                                     },
                                     "type": "object"

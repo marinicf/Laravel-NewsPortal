@@ -1,6 +1,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
+import Checkbox from "@/Components/Checkbox.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 defineProps({
     articles: {
@@ -30,6 +32,22 @@ const submit = () => {
     form.get(route("login"), {
         onFinish: () => form.reset("password"),
     });
+};
+const allFavourites = JSON.parse(JSON.stringify(usePage().props.allFavourites));
+let processing = false;
+const isFavorite = (article) => {
+    //Check if the article is in the allFavourites array
+    return allFavourites.some((favArticle) => favArticle.url === article.url);
+};
+
+const toggleFav = (selectedArticle) => {
+    processing = true;
+    if (isFavorite(selectedArticle)) {
+        Inertia.delete(route("favourites.destroy", selectedArticle));
+    }
+    Inertia.post(route("favourites.store", selectedArticle));
+
+    processing = false;
 };
 </script>
 
@@ -130,12 +148,24 @@ const submit = () => {
                             <p class="font-normal text-gray-700 mb-3">
                                 {{ article.description }}
                             </p>
+                        </div>
+                        <div class="flex justify-evenly mb-3">
                             <a
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-                                v-bind:href="article.url"
+                                :href="article.url"
                             >
                                 Read more
                             </a>
+                            <div>
+                                <Checkbox
+                                    :disabled="processing"
+                                    :value="article.url"
+                                    @change="toggleFav(article)"
+                                    :checked="
+                                        isFavorite(article) ? true : false
+                                    "
+                                ></Checkbox>
+                            </div>
                         </div>
                     </div>
                 </div>
