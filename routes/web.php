@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\TopHeadLineController;
 use App\Http\Controllers\UserSettingController;
 use App\Http\Controllers\UserFavouriteController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,9 +30,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
@@ -48,7 +46,17 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/favourites', [UserFavouriteController::class, 'index'])->name('favourites.index');
     Route::post('/favourites', [UserFavouriteController::class, 'store'])->name('favourites.store');
+    Route::delete('/favourites/{favourite_id}', [UserFavouriteController::class, 'destroy'])->name('favourites.destroy');
     
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/adminDashboard', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/{userId}',[AdminController::class, 'show'])->name('admin.show');
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
 });
 
 require __DIR__.'/auth.php';

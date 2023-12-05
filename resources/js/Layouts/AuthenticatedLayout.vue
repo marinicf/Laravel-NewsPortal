@@ -5,9 +5,10 @@ import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 
 const showingNavigationDropdown = ref(false);
+const isAdmin = usePage().props.auth.user.is_admin;
 </script>
 
 <template>
@@ -32,12 +33,6 @@ const showingNavigationDropdown = ref(false);
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
                                     :href="route('articles.index')"
                                     :active="route().current('articles.index')"
                                 >
@@ -58,6 +53,13 @@ const showingNavigationDropdown = ref(false);
                                     "
                                 >
                                     Favourite Articles
+                                </NavLink>
+                                <NavLink
+                                    v-if="isAdmin"
+                                    :href="route('admin.index')"
+                                    :active="route().current('admin.index')"
+                                >
+                                    Dashboard
                                 </NavLink>
                             </div>
                         </div>
@@ -178,14 +180,14 @@ const showingNavigationDropdown = ref(false);
                             Articles
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            :href="route('articles.index')"
-                            :active="route().current('articles.index')"
+                            :href="route('topHeadlines.index')"
+                            :active="route().current('topHeadlines.index')"
                         >
                             Top Headlines
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            :href="route('favourites.index')"
+                            :active="route().current('favourites.index')"
                         >
                             Favourite articels
                         </ResponsiveNavLink>

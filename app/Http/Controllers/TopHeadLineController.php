@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use jcobhams\NewsApi\NewsApi;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use App\Models\User;
+use App\Models\UserFavourite;
 class TopHeadLineController extends Controller
 {
      /**
@@ -99,6 +100,8 @@ class TopHeadLineController extends Controller
 
         $allSources = $newsapi->getSources($category, null,$country);
 
+        $allFavourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+
         //If sources are selected from dropdown set country and category to null because getTopHeadlines() requires it.
         if($source){
             $category = null;
@@ -116,7 +119,8 @@ class TopHeadLineController extends Controller
             'allSources' => $allSources->sources, 
             'currentCountry'=> $country, 
             'currentCategory' => $category,
-            'currentSource' => $source
+            'currentSource' => $source,
+            'allFavourites' => $allFavourites,
         ]);
     }
 }
