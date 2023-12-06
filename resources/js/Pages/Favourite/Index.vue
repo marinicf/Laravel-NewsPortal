@@ -21,6 +21,7 @@ const deleteFavArticle = (article_id) => {
         });
     }
 };
+const reversedArticels = () => {};
 </script>
 
 <template>

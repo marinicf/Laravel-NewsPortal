@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\User;
 use App\Models\UserFavourite;
+use App\Models\UserComment;
 use Illuminate\Http\Request;
 use jcobhams\NewsApi\NewsApi;
 use Inertia\Inertia;
@@ -81,13 +82,19 @@ class ArticleController extends Controller
         $keyword='*';
         $prePage = 10;
 
+        $user = auth()->user();
+
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
         $allSortbyOptions = $newsapi->getSortBy();
 
         $allLanguages = $newsapi->getLanguages();
 
-        $allFavourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+        $allFavourites = UserFavourite::where('user_id',$user->id)->get();
+
+        $allComments = UserComment::all();
+
+        $allUsersNames = User::all('id','name');
 
         $response = $newsapi->getEverything($keyword, null, null, null, null, null, null, null, $prePage, null);
 
@@ -99,6 +106,8 @@ class ArticleController extends Controller
             'keyword'=> $keyword, 
             'allLanguages' => $allLanguages,
             'allFavourites' => $allFavourites, 
+            'allComments' => $allComments,
+            'allUsersNames' => $allUsersNames,
         ]);
     }
     /**

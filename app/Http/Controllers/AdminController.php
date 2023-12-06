@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserFavourite;
+use App\Models\UserComment;
 use Inertia\Inertia;
 use Inertia\Response;
 /**
@@ -119,6 +120,20 @@ class AdminController extends Controller
     public function show($userId){
         $selectedUser = User::where('id',$userId)->first();
         $userFavouritesArticles = UserFavourite::where('user_id',$userId)->get();
-        return Inertia::render('Admin/UserInfo',['user'=> $selectedUser, 'userFavourites'=>$userFavouritesArticles]);
+        $userComments = UserComment::where('user_id',$userId)->get();
+        return Inertia::render('Admin/UserInfo',['user'=> $selectedUser, 'userFavourites'=>$userFavouritesArticles, 'userComments' =>$userComments]);
+    }
+
+    public function edit($comment_id){
+        $selectedComment = UserComment::where('id',$comment_id)->first();
+        return Inertia::render('Admin/EditComment',compact('selectedComment'));
+    }
+
+    public function update($comment_id, Request $request){
+        $comment  = UserComment::where('id',$comment_id)->first();
+        $comment->comment_text = $request->get('comment');
+        $comment->save();
+        
+        return to_route('admin.index');
     }
 }

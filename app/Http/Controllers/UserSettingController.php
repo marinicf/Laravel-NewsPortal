@@ -120,6 +120,6 @@ class UserSettingController extends Controller
         
         $user->save();
         
-        return Redirect::route('userSettings.edit');
+        return to_route('userSettings.edit');
     }
 }
