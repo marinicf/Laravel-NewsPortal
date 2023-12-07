@@ -25,7 +25,8 @@ const commentForm = useForm({
             <form
                 @submit.prevent="
                     commentForm.patch(
-                        route('adminComments.update', commentForm.id)
+                        route('comments.update', commentForm.id),
+                        { preserveScroll: true }
                     )
                 "
                 class="w-full px-3 bg-white rounded-lg"
@@ -53,6 +54,13 @@ const commentForm = useForm({
                         >
                             Save
                         </button>
+                        <!-- <Link
+                            :href="route()"
+                            type="button"
+                            class="border px-5 py-2 rounded-md shadow bg-gray-100"
+                        >
+                            Cancle
+                        </Link> -->
                     </div>
                 </div>
             </form>

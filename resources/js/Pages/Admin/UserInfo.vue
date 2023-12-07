@@ -121,11 +121,11 @@ const deleteComment = (comment_id) => {
                                         <Link
                                             :href="
                                                 route(
-                                                    'comments.edit',
+                                                    'adminComments.edit',
                                                     comment.id
                                                 )
                                             "
-                                            class="px-2 py-1 bg-gray-800 text-white rounded-lg font-semibold text-xs uppercase tracking-widest hover:bg-gray-700"
+                                            class="px-2 py-1 bg-yellow-400 text-white rounded-lg font-semibold text-xs uppercase tracking-widest hover:bg-yellow-300"
                                         >
                                             Edit
                                         </Link>

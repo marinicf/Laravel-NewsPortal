@@ -86,15 +86,15 @@ class ArticleController extends Controller
 
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
-        $allSortbyOptions = $newsapi->getSortBy();
+        $sortBy = $newsapi->getSortBy();
 
-        $allLanguages = $newsapi->getLanguages();
+        $languages = $newsapi->getLanguages();
 
-        $allFavourites = UserFavourite::where('user_id',$user->id)->get();
+        $favourites = UserFavourite::where('user_id',$user->id)->get();
 
-        $allComments = UserComment::all();
+        $comments = UserComment::all();
 
-        $allUsersNames = User::all('id','name');
+        $users = User::all('id','name');
 
         $response = $newsapi->getEverything($keyword, null, null, null, null, null, null, null, $prePage, null);
 
@@ -102,12 +102,12 @@ class ArticleController extends Controller
         return Inertia::render('Article/Index', 
         [
             'articles' => $response->articles,
-            'allSortByOptions' => $allSortbyOptions, 
+            'allSortByOptions' => $sortBy, 
             'keyword'=> $keyword, 
-            'allLanguages' => $allLanguages,
-            'allFavourites' => $allFavourites, 
-            'allComments' => $allComments,
-            'allUsersNames' => $allUsersNames,
+            'allLanguages' => $languages,
+            'allFavourites' => $favourites, 
+            'allComments' => $comments,
+            'allUsersNames' => $users,
         ]);
     }
     /**
@@ -236,7 +236,7 @@ class ArticleController extends Controller
 
         $user = auth()->user();
 
-        $keyword = $request->get('q') ? $request->get('q') : '*';
+        $keyword = $request->get('keyword') ? $request->get('keyword') : '*';
         $source= /*$request->get('sources') ? $request->get('sources') :*/ null;
         $from= $request->get('from') ? $request->get('from') : null;
         $to=$request->get('to') ? $request->get('to') : null;
@@ -249,6 +249,12 @@ class ArticleController extends Controller
 
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
+        $favourites = UserFavourite::where('user_id',$user->id)->get();
+
+        $comments = UserComment::all();
+
+        $users = User::all('id','name');
+
         $response = $newsapi->getEverything($keyword, $source, null, null, $from, $to, $language, $sortBy, $perPage, $page);
         $path =  $request->url();
         $query = $request->all();
@@ -260,6 +266,9 @@ class ArticleController extends Controller
 
         return Inertia::render('Article/Paginated', 
         [
+            'allFavourites' => $favourites, 
+            'allComments' => $comments,
+            'allUsersNames' => $users,
             'articles' => $paginated,
         ]);
     }
