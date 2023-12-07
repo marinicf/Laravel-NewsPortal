@@ -21,6 +21,7 @@ const deleteFavArticle = (article_id) => {
         });
     }
 };
+const reversedArticels = () => {};
 </script>
 
 <template>
@@ -60,7 +61,7 @@ const deleteFavArticle = (article_id) => {
                         </div>
                         <div class="flex justify-evenly mb-3">
                             <a
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+                                class="text-white bg-blue-600 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
                                 :href="article.url"
                             >
                                 Read more
@@ -68,7 +69,7 @@ const deleteFavArticle = (article_id) => {
                             <div>
                                 <button
                                     @click="deleteFavArticle(article.id)"
-                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    class="inline-flex items-center px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-400 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                 >
                                     Remove
                                 </button>

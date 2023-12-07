@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\User;
 use App\Models\UserFavourite;
+use App\Models\UserComment;
 use Illuminate\Http\Request;
 use jcobhams\NewsApi\NewsApi;
 use Inertia\Inertia;
@@ -81,13 +82,19 @@ class ArticleController extends Controller
         $keyword='*';
         $prePage = 10;
 
+        $user = auth()->user();
+
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
-        $allSortbyOptions = $newsapi->getSortBy();
+        $sortBy = $newsapi->getSortBy();
 
-        $allLanguages = $newsapi->getLanguages();
+        $languages = $newsapi->getLanguages();
 
-        $allFavourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+        $favourites = UserFavourite::where('user_id',$user->id)->get();
+
+        $comments = UserComment::all();
+
+        $users = User::all('id','name');
 
         $response = $newsapi->getEverything($keyword, null, null, null, null, null, null, null, $prePage, null);
 
@@ -95,10 +102,12 @@ class ArticleController extends Controller
         return Inertia::render('Article/Index', 
         [
             'articles' => $response->articles,
-            'allSortByOptions' => $allSortbyOptions, 
+            'allSortByOptions' => $sortBy, 
             'keyword'=> $keyword, 
-            'allLanguages' => $allLanguages,
-            'allFavourites' => $allFavourites, 
+            'allLanguages' => $languages,
+            'allFavourites' => $favourites, 
+            'allComments' => $comments,
+            'allUsersNames' => $users,
         ]);
     }
     /**
@@ -227,7 +236,7 @@ class ArticleController extends Controller
 
         $user = auth()->user();
 
-        $keyword = $request->get('q') ? $request->get('q') : '*';
+        $keyword = $request->get('keyword') ? $request->get('keyword') : '*';
         $source= /*$request->get('sources') ? $request->get('sources') :*/ null;
         $from= $request->get('from') ? $request->get('from') : null;
         $to=$request->get('to') ? $request->get('to') : null;
@@ -240,6 +249,12 @@ class ArticleController extends Controller
 
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
+        $favourites = UserFavourite::where('user_id',$user->id)->get();
+
+        $comments = UserComment::all();
+
+        $users = User::all('id','name');
+
         $response = $newsapi->getEverything($keyword, $source, null, null, $from, $to, $language, $sortBy, $perPage, $page);
         $path =  $request->url();
         $query = $request->all();
@@ -251,6 +266,9 @@ class ArticleController extends Controller
 
         return Inertia::render('Article/Paginated', 
         [
+            'allFavourites' => $favourites, 
+            'allComments' => $comments,
+            'allUsersNames' => $users,
             'articles' => $paginated,
         ]);
     }

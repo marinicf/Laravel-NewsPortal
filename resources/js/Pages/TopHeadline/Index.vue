@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
-import Checkbox from "@/Components/Checkbox.vue";
-import { Inertia } from "@inertiajs/inertia";
+import SingleArticle from "../SingleArticle.vue";
 
 defineProps({
     articles: {
@@ -12,6 +11,9 @@ defineProps({
         type: Array,
     },
     allCountries: {
+        type: Array,
+    },
+    allComments: {
         type: Array,
     },
 });
@@ -28,27 +30,6 @@ const form = useForm({
     category: selectedCategory ? selectedCategory : user.category,
     country: selectedCountry ? selectedCountry : user.category,
 });
-const submit = () => {
-    form.get(route("login"), {
-        onFinish: () => form.reset("password"),
-    });
-};
-const allFavourites = JSON.parse(JSON.stringify(usePage().props.allFavourites));
-let processing = false;
-const isFavorite = (article) => {
-    //Check if the article is in the allFavourites array
-    return allFavourites.some((favArticle) => favArticle.url === article.url);
-};
-
-const toggleFav = (selectedArticle) => {
-    processing = true;
-    if (isFavorite(selectedArticle)) {
-        Inertia.delete(route("favourites.destroy", selectedArticle));
-    }
-    Inertia.post(route("favourites.store", selectedArticle));
-
-    processing = false;
-};
 </script>
 
 <template>
@@ -62,7 +43,7 @@ const toggleFav = (selectedArticle) => {
         </template>
         <div class="flex items-center justify-center p-12">
             <div class="mx-auto w-full max-w-[550px]">
-                <form action="topHeadlines" method="GET">
+                <form action="topHeadlines" method="get">
                     <div class="-mx-3 flex flex-wrap">
                         <div class="w-full px-3 sm:w-1/2">
                             <div class="mb-5">
@@ -112,6 +93,7 @@ const toggleFav = (selectedArticle) => {
                         </div>
                         <div class="w-full px-3 sm:w-1/2">
                             <button
+                                type="submit"
                                 class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
                                 :class="{ 'opacity-25': form.processing }"
                                 :disabled="form.processing"
@@ -126,49 +108,11 @@ const toggleFav = (selectedArticle) => {
 
         <div v-if="articles" class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-for="article in articles" class="max-w-lg mx-auto">
-                    <div
-                        class="bg-white shadow-md border border-gray-200 rounded-lg max-w-lg mb-5"
-                    >
-                        <a v-bind:href="article.url">
-                            <img
-                                class="rounded-t-lg"
-                                v-bind:src="article.urlToImage"
-                                alt=""
-                            />
-                        </a>
-                        <div class="p-5">
-                            <a v-bind:href="article.url">
-                                <h5
-                                    class="text-gray-900 font-bold text-2xl tracking-tight mb-2"
-                                >
-                                    {{ article.title }}
-                                </h5>
-                            </a>
-                            <p class="font-normal text-gray-700 mb-3">
-                                {{ article.description }}
-                            </p>
-                        </div>
-                        <div class="flex justify-evenly mb-3">
-                            <a
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-                                :href="article.url"
-                            >
-                                Read more
-                            </a>
-                            <div>
-                                <Checkbox
-                                    :disabled="processing"
-                                    :value="article.url"
-                                    @change="toggleFav(article)"
-                                    :checked="
-                                        isFavorite(article) ? true : false
-                                    "
-                                ></Checkbox>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <SingleArticle
+                    v-for="article in articles"
+                    :article="article"
+                    :all-comments="allComments"
+                ></SingleArticle>
             </div>
         </div>
         <div v-else>

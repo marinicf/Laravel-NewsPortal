@@ -127,7 +127,8 @@ class UserFavouriteController extends Controller{
                 'user_id' => $user->id,
             ]);
         }
-        return to_route('articles.index');
+        //return to_route('articles.index');
+        return redirect()->back();
     }
     /**
      * Remove the specified favourite article from storage.
@@ -181,6 +182,6 @@ class UserFavouriteController extends Controller{
         $favouriteArticle = UserFavourite::find($favourite_id);
         $favouriteArticle->delete();
 
-        return to_route('favourites.index');
+        return redirect()->back();
     }
 }
