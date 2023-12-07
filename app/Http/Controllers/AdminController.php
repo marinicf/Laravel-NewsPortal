@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserFavourite;
+use App\Models\UserComment;
 use Inertia\Inertia;
 use Inertia\Response;
 /**
@@ -14,6 +15,46 @@ use Inertia\Response;
  */
 class AdminController extends Controller
 {
+/**
+     * Display a listing of non-admin users.
+     *
+     * @authenticated
+     *
+     * @return \Inertia\Response
+     *
+     * @OA\Get(
+     *      path="/adminDashboard",
+     *      operationId="admin.index",
+     *      tags={"Admin"},
+     *      summary="Display a listing of non-admin users.",
+     *      description="Returns a list of non-admin users for admin dashboard.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="users", type="array", @OA\Items(
+     *                  @OA\Property(property="id", type="integer", example=1),
+     *                  @OA\Property(property="name", type="string", example="John Doe"),
+     *                  @OA\Property(property="email", type="string", example="john@example.com"),
+     *              )),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Internal server error",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="error", type="string")
+     *          )
+     *      )
+     * )
+     */
+    public function index(Request $request)
+    {
+        $users = User::where('is_admin', false)->get();
+        return Inertia::render('Dashboard', ['users' => $users]);
+    }
     /**
  * Display the specified user's information and favourite articles.
  *
@@ -79,6 +120,70 @@ class AdminController extends Controller
     public function show($userId){
         $selectedUser = User::where('id',$userId)->first();
         $userFavouritesArticles = UserFavourite::where('user_id',$userId)->get();
-        return Inertia::render('Admin/UserInfo',['user'=> $selectedUser, 'userFavourites'=>$userFavouritesArticles]);
+        $userComments = UserComment::where('user_id',$userId)->get();
+        return Inertia::render('Admin/UserInfo',['user'=> $selectedUser, 'userFavourites'=>$userFavouritesArticles, 'userComments' =>$userComments]);
+    }
+/**
+ * @OA\Get(
+ *      path="/admin/comments/{comment_id}/edit",
+ *      operationId="admin.comments.edit",
+ *      tags={"Admin"},
+ *      summary="Display the form for editing a specific user comment.",
+ *      @OA\Parameter(
+ *          name="comment_id",
+ *          in="path",
+ *          description="ID of the comment to be edited",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Successful operation",
+ *          @OA\JsonContent(
+ *              type="object",
+ *              @OA\Property(property="selectedComment", type="object", description="The selected comment for editing.")
+ *          )
+ *      )
+ * )
+ */
+    public function edit($comment_id){
+        $selectedComment = UserComment::where('id',$comment_id)->first();
+        return Inertia::render('Admin/EditComment',compact('selectedComment'));
+    }
+/**
+ * @OA\Patch(
+ *      path="/admin/comments/{comment_id}",
+ *      operationId="admin.comments.update",
+ *      tags={"Admin"},
+ *      summary="Update the specified user comment in storage.",
+ *      @OA\Parameter(
+ *          name="comment_id",
+ *          in="path",
+ *          description="ID of the comment to be updated",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          required=true,
+ *          @OA\JsonContent(
+ *              type="object",
+ *              @OA\Property(property="comment", type="string", description="The updated comment text.")
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Successful operation",
+ *          @OA\JsonContent(
+ *              type="object",
+ *              @OA\Property(property="message", type="string", description="Comment updated successfully.")
+ *          )
+ *      )
+ * )
+ */
+    public function update($comment_id, Request $request){
+        $comment  = UserComment::where('id',$comment_id)->first();
+        $comment->comment_text = $request->get('comment');
+        $comment->save();
+        return to_route('admin.index');
     }
 }

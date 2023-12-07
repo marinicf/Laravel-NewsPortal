@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\User;
 use App\Models\UserFavourite;
+use App\Models\UserComment;
 class TopHeadLineController extends Controller
 {
      /**
@@ -94,13 +95,17 @@ class TopHeadLineController extends Controller
 
         $newsapi = new NewsApi($apiKey = env('NEWS_API_KEY'));
 
-        $allCategories = $newsapi->getCategories();
+        $categories = $newsapi->getCategories();
 
-        $allCountries = $newsapi->getCountries();
+        $countries = $newsapi->getCountries();
 
-        $allSources = $newsapi->getSources($category, null,$country);
+        $sources = $newsapi->getSources($category, null,$country);
 
-        $allFavourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+        $favourites = UserFavourite::where('user_id',auth()->user()->id)->get();
+
+        $comments = UserComment::all();
+
+        $users = User::all('id','name');
 
         //If sources are selected from dropdown set country and category to null because getTopHeadlines() requires it.
         if($source){
@@ -113,14 +118,16 @@ class TopHeadLineController extends Controller
         //Return view with articles array for display and allCategories, allCountriesa and allSources for select options.
         return Inertia::render('TopHeadline/Index', [   
             'articles' => $response->articles, 
-            'allCategories' => $allCategories, 
-            'allCountries' => $allCountries, 
+            'allCategories' => $categories, 
+            'allCountries' => $countries, 
             'keyword'=> $q, 
-            'allSources' => $allSources->sources, 
+            'allSources' => $sources->sources, 
             'currentCountry'=> $country, 
             'currentCategory' => $category,
             'currentSource' => $source,
-            'allFavourites' => $allFavourites,
+            'allFavourites' => $favourites,
+            'allComments'=> $comments,
+            'allUsersNames' => $users
         ]);
     }
 }

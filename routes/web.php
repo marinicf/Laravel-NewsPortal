@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\TopHeadLineController;
 use App\Http\Controllers\UserSettingController;
 use App\Http\Controllers\UserFavouriteController;
+use App\Http\Controllers\UserCommentController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,11 +49,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/favourites', [UserFavouriteController::class, 'store'])->name('favourites.store');
     Route::delete('/favourites/{favourite_id}', [UserFavouriteController::class, 'destroy'])->name('favourites.destroy');
     
+    Route::post('/comments', [UserCommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment_id}', [UserCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('/comments/{comment_id}/edit', [UserCommentController::class, 'edit'])->name('comments.edit');
+    Route::patch('/comments/{comment_id}', [UserCommentController::class, 'update'])->name('comments.update');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
+
     Route::get('/adminDashboard', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/{userId}',[AdminController::class, 'show'])->name('admin.show');
+    Route::get('/admin/{user_id}',[AdminController::class, 'show'])->name('admin.show');
+    Route::get('/admin/comments/{comment_id}/edit', [AdminController::class, 'edit'])->name('adminComments.edit');
+    Route::patch('/admin/comments/{comment_id}', [AdminController::class, 'update'])->name('adminComments.update');
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
