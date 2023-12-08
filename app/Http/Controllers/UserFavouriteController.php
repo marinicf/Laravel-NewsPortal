@@ -74,6 +74,7 @@ class UserFavouriteController extends Controller{
             'articles' => $favouriteArticles,
         ]);
     }
+
     /**
      * Store user's favourite articles.
      *
@@ -135,8 +136,10 @@ class UserFavouriteController extends Controller{
                 'user_id' => $user->id,
             ]);
         }
+
         return redirect()->back();
     }
+
     /**
      * Remove the specified favourite article from storage.
      *
