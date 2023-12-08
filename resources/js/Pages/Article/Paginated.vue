@@ -12,6 +12,7 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const error = usePage().props.errors;
 const allUserNames = usePage().props.allUsersNames;
 const getUserName = (userId) => {
     let name = "";
@@ -242,6 +243,9 @@ const addComment = (articleUrl) => {
                         >Back</Link
                     >
                 </div>
+            </div>
+            <div>
+                <p>{{ error }}</p>
             </div>
         </div>
     </AuthenticatedLayout>

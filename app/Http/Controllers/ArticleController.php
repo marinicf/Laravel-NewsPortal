@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use jcobhams\NewsApi\NewsApi;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Validation\Rule;
 /**
  * @OA\Info(
  *      title="News portal",
@@ -235,6 +236,15 @@ class ArticleController extends Controller
     public function paginated(Request $request): Response{
 
         $user = auth()->user();
+        $request->validate([
+            'keyword' => 'nullable|regex:/^[a-zA-Z0-9\s*]+$/|max:255',
+            'from' => 'nullable|date',
+            'to' => 'nullable|date|after_or_equal:from',
+            'language' => ['nullable', 'string', Rule::in(['ar', 'en', 'cn', 'de', 'es', 'fr', 'he', 'it', 'nl', 'no', 'pt', 'ru', 'sv', 'ud'])],
+            'sortBy' => 'nullable|string',
+            'perPage' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
+        ]);
 
         $keyword = $request->get('keyword') ? $request->get('keyword') : '*';
         $source= /*$request->get('sources') ? $request->get('sources') :*/ null;
