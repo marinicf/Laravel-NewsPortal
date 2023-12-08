@@ -45,7 +45,6 @@ class UserCommentController extends Controller
  * )
  */
     public function store(Request $request){
-
         $request->validate([
             'url' => 'required|string',
             'comment' => 'required|string',
@@ -58,7 +57,6 @@ class UserCommentController extends Controller
         ]);
 
         return redirect()->back();
-        //return $request;
     }
 /**
  * @OA\Delete(
@@ -182,9 +180,11 @@ class UserCommentController extends Controller
         $request->validate([
             'comment' => 'required|string',
         ]);
+
         $comment  = UserComment::where('id',$comment_id)->first();
         $comment->comment_text = $request->get('comment');
         $comment->save();
+        
         return to_route('articles.index');
     }
 }
