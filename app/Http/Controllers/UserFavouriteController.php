@@ -74,6 +74,7 @@ class UserFavouriteController extends Controller{
             'articles' => $favouriteArticles,
         ]);
     }
+
     /**
      * Store user's favourite articles.
      *
@@ -113,11 +114,19 @@ class UserFavouriteController extends Controller{
      */
     public function store(Request $request){
 
+        $request->validate([
+            'title' => 'required|string',
+            'url' => 'required|string',
+            'author' => 'required|string',
+            'description' =>'required|string',
+            'urlToImage' => 'required|string',
+        ]);
+
         $user = auth()->user();
         
-        //Check if article exists in database
-        if (!UserFavourite::where('url', $request->get('url'))->exists() ) {
-            // If favourite article is not found add it
+        // Check if the article is already a favorite for the current user
+        if (!UserFavourite::where('url', $request->get('url'))->where('user_id', $user->id)->exists()) {
+            // If the article is not a favorite for the current user, add it
             UserFavourite::create([
                 'title' => $request->get('title'),
                 'url' => $request->get('url'),
@@ -127,9 +136,10 @@ class UserFavouriteController extends Controller{
                 'user_id' => $user->id,
             ]);
         }
-        //return to_route('articles.index');
+
         return redirect()->back();
     }
+
     /**
      * Remove the specified favourite article from storage.
      *

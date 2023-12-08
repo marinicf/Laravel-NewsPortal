@@ -19,9 +19,7 @@ const commentForm = useForm({
     <Head title="UserInfo" />
 
     <AuthenticatedLayout>
-        <div
-            class="flex mx-auto items-center justify center shadow-lg mx-5 my-2"
-        >
+        <div class="flex mx-auto items-center justify center shadow-lg my-2">
             <form
                 @submit.prevent="
                     commentForm.patch(
@@ -54,13 +52,13 @@ const commentForm = useForm({
                         >
                             Save
                         </button>
-                        <!-- <Link
-                            :href="route()"
+                        <Link
+                            :href="route('articles.index')"
                             type="button"
-                            class="border px-5 py-2 rounded-md shadow bg-gray-100"
+                            class="border px-5 py-2 rounded-md shadow bg-gray-100 ml-5"
                         >
                             Cancle
-                        </Link> -->
+                        </Link>
                     </div>
                 </div>
             </form>

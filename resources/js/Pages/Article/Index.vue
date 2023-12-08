@@ -18,6 +18,7 @@ defineProps({
     },
 });
 const user = usePage().props.auth.user;
+const error = usePage().props.errors;
 
 const form = useForm({
     keyword: "",
@@ -26,6 +27,32 @@ const form = useForm({
     from: null,
     to: null,
 });
+const languageCodes = [
+    { ar: "Arabic" },
+    { en: "English" },
+    { cn: "Chinese" },
+    { de: "German" },
+    { es: "Spanish" },
+    { fr: "French" },
+    { he: "Hebrew" },
+    { it: "Italian" },
+    { nl: "Dutch" },
+    { no: "Norwegian" },
+    { pt: "Portuguese" },
+    { ru: "Russian" },
+    { sv: "Swedish" },
+    { ud: "Undefined" },
+];
+
+const transformedLanguage = (code) => {
+    let language = "";
+    [...languageCodes].forEach((x) => {
+        if (Object.keys(x) == code) {
+            language = x[Object.keys(x)];
+        }
+    });
+    return language;
+};
 
 const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -68,14 +95,14 @@ const capitalizeFirstLetter = (string) => {
                             <select
                                 id="language"
                                 v-model="form.language"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-300 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
                                 <option
                                     v-for="language in allLanguages"
                                     :value="language"
                                     :selected="form.language === language"
                                 >
-                                    {{ language }}
+                                    {{ transformedLanguage(language) }}
                                 </option>
                             </select>
                         </div>
@@ -93,7 +120,7 @@ const capitalizeFirstLetter = (string) => {
                                         type="date"
                                         v-model="form.from"
                                         id="from"
-                                        class="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                        class="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-300 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     />
                                 </div>
                             </div>
@@ -108,7 +135,7 @@ const capitalizeFirstLetter = (string) => {
                                         type="date"
                                         v-model="form.to"
                                         id="to"
-                                        class="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                        class="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-300 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     />
                                 </div>
                             </div>
@@ -124,7 +151,7 @@ const capitalizeFirstLetter = (string) => {
                             <select
                                 id="sortBy"
                                 v-model="form.sortBy"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 dark:border-gray-300 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
                                 <option
                                     v-for="sortBy in allSortByOptions"
@@ -138,7 +165,7 @@ const capitalizeFirstLetter = (string) => {
                     </div>
                     <div class="pb-5 basis-1/5 md:basis-1/6 flex items-end">
                         <button
-                            class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                            class="hover:shadow-form rounded-md bg-[#6A64F1] py-2 px-8 text-center text-base font-semibold text-white outline-none"
                             type="submit"
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
@@ -148,6 +175,9 @@ const capitalizeFirstLetter = (string) => {
                     </div>
                 </div>
             </form>
+            <div v-if="error.keyword" class="content-center">
+                <p>{{ error.keyword }}</p>
+            </div>
         </div>
 
         <div v-if="articles" class="py-5">
