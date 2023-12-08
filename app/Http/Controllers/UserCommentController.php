@@ -45,7 +45,6 @@ class UserCommentController extends Controller
  * )
  */
     public function store(Request $request){
-
         $request->validate([
             'url' => 'required|string',
             'comment' => 'required|string',
@@ -58,7 +57,6 @@ class UserCommentController extends Controller
         ]);
 
         return redirect()->back();
-        //return $request;
     }
 /**
  * @OA\Delete(
