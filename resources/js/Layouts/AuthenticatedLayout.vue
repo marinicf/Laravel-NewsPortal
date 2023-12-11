@@ -168,8 +168,9 @@ const isAdmin = usePage().props.auth.user.is_admin;
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            v-if="isAdmin"
+                            :href="route('admin.index')"
+                            :active="route().current('admin.index')"
                         >
                             Dashboard
                         </ResponsiveNavLink>

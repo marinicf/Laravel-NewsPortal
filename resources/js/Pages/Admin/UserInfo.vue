@@ -1,6 +1,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link, usePage, router } from "@inertiajs/vue3";
+import { Head, Link, useForm, router } from "@inertiajs/vue3";
+import InputLabel from "@/Components/InputLabel.vue";
+import { toRefs } from "vue";
 defineProps({
     user: {
         type: Object,
@@ -9,6 +11,9 @@ defineProps({
         type: Array,
     },
     userComments: {
+        type: Array,
+    },
+    allCategories: {
         type: Array,
     },
 });
@@ -37,9 +42,15 @@ const deleteComment = (comment_id) => {
                 {{ user ? user.name : "" }}
             </h2>
         </template>
-
-        <div class="py-12">
+        <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <Link
+                    :href="route('admin.index')"
+                    as="button"
+                    type="button"
+                    class="inline-flex items-center px-4 py-2 mb-5 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    >Back</Link
+                >
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-t-lg">
                     <div class="p-4 text-gray-900">User Favourites</div>
                 </div>
@@ -72,7 +83,7 @@ const deleteComment = (comment_id) => {
                                             @click="deleteFavArticle(fav.id)"
                                             class="px-2 py-1 bg-red-600 text-white rounded-lg font-semibold text-xs uppercase tracking-widest hover:bg-red-500"
                                         >
-                                            Delete
+                                            delete
                                         </button>
                                     </td>
                                 </tr>
@@ -85,7 +96,7 @@ const deleteComment = (comment_id) => {
                 </div>
             </div>
         </div>
-        <div class="py-12">
+        <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-t-lg">
                     <div class="p-4 text-gray-900">User Comments</div>
