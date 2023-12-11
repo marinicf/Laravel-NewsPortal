@@ -42,7 +42,7 @@ const deleteComment = (commentId) => {
     }
 };
 const editComment = (commentId) => {
-    router.get(route("adminComments.edit", commentId), {
+    router.get(route("comments.edit", commentId), {
         preserveScroll: true,
     });
 };
